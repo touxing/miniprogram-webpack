@@ -1,0 +1,10 @@
+{
+  "presets": [
+    [
+      "@babel/env"
+      // ,{ // 开启这个打包报错
+      //   "useBuiltIns": "usage"
+      // }
+    ]
+  ]
+}

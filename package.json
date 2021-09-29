@@ -1,0 +1,26 @@
+{
+  "name": "cmbc_FUN_wxmini",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack --watch --progress",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6",
+    "babel-loader": "^8.2.2",
+    "loadsh": "^0.0.4"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^6.3.2",
+    "ensure-posix-path": "^1.1.1",
+    "prerender-loader": "^1.3.0",
+    "replace-ext": "^2.0.0",
+    "required-path": "^1.0.1",
+    "webpack": "4.x",
+    "webpack-cli": "^4.8.0"
+  }
+}
