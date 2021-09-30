@@ -8,8 +8,6 @@ const LodashWebpackPlugin = require('lodash-webpack-plugin')
 const debuggable = process.env.BUILD_TYPE != 'release'
 
 module.exports = (env, argv) => {
-  console.log('env', env)
-  console.log('argv', argv)
   const config = {
     // mode 有三个可能的值，分别是 production, development, none，
     // 小程序不能用 development，所以只有 production 和 none 这两个值。
@@ -22,12 +20,37 @@ module.exports = (env, argv) => {
       filename: '[name].js',
       globalObject: 'wx',
     },
+    resolve: {
+      extensions: ['.js'],
+    },
     module: {
       rules: [
         {
           test: /\.js$/,
           exclude: /(node_modules)/,
           use: 'babel-loader',
+        },
+        {
+          test: /\.(scss)$/,
+          include: /src/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                useRelativePath: true,
+                name: '[path][name].wxss',
+                context: resolve('src'),
+              },
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sassOptions: {
+                  includePaths: [resolve('src', 'assets', 'styles'), resolve('src')],
+                }
+              },
+            },
+          ],
         },
       ],
     },
@@ -39,7 +62,10 @@ module.exports = (env, argv) => {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV) || 'development',
         BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'debug',
       }),
-      new MinaWepackPlugin(),
+      new MinaWepackPlugin({
+        scriptExtensions: ['.js'],
+        assetExtensions: ['.scss'],
+      }),
       new MinaRuntimePlugin(),
       new LodashWebpackPlugin(),
       new CopyWebpackPlugin({
@@ -49,7 +75,7 @@ module.exports = (env, argv) => {
             to: './',
             globOptions: {
               gitignore: true,
-              ignore: ['**/*.js'],
+              ignore: ['**/*.js', '**/*.scss'],
             },
           },
         ],
