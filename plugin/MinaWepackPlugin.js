@@ -78,8 +78,12 @@ class MinaWebpackPlugin {
 
     this.entries
       .map(item => first(item, this.scriptExtensions))
+       // 把绝对路径转换成相对于 context 的路径
       .map(item => path.relative(context, item))
       .forEach(item => itemToPlugin(context, './' + item, replaceExt(item, '')).apply(compiler))
+       //  应用每一个的入口，生成如下的入口
+      // 'app': './app.js',
+      // 'pages/index/index': './pages/index/index.js',
 
     const assets = this.entries
       .reduce((items, item) => [...items, ...all(item, this.assetExtensions)], [])
@@ -91,12 +95,15 @@ class MinaWebpackPlugin {
     }
   }
 
+  // apply是每一个插件的入口
   apply(compiler) {
     const { context, entry } = compiler.options
     inflateEntries(this.entries, context, entry)
 
+    // 这里订阅一个 compiler 的 entryOption 事件，当事件发生时，就会执行回调里面的代码
     compiler.hooks.entryOption.tap('MinaWebpackPlugin', () => {
       this.applyEntry(compiler)
+      // 返回 true 告诉 webpack 内置插件就不要处理入口文件了，因为这里已经处理了
       return true
     })
 
