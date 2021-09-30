@@ -14,6 +14,7 @@ function itemToPlugin(context, item, name) {
 }
 
 function _inflateEntries(entries = [], dirname, entry) {
+  // 读取入口文件 app.js -> app.json
   const configFile = replaceExt(entry, '.json')
   const content = fs.readFileSync(configFile, 'utf8')
   const config = JSON.parse(content)
