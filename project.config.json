@@ -6,8 +6,8 @@
   },
   "setting": {
     "urlCheck": false,
-    "es6": true,
-    "enhance": true,
+    "es6": false,
+    "enhance": false,
     "postcss": true,
     "preloadBackgroundData": false,
     "minified": true,
@@ -36,12 +36,12 @@
     "userConfirmedBundleSwitch": false,
     "packNpmManually": false,
     "packNpmRelationList": [],
-    "minifyWXSS": true,
+    "minifyWXSS": false,
     "showES6CompileOption": false
   },
   "compileType": "miniprogram",
   "libVersion": "2.19.5",
-  "appid": "wxca932d62142b2648",
+  "appid": "wxa846125c60ebbd60",
   "projectname": "miniprogram-3",
   "debugOptions": {
     "hidedInDevtools": []

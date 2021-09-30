@@ -1,4 +1,4 @@
-import { camelCase } from 'loadsh'
+import { camelCase } from 'lodash'
 
 App({
   onLaunch() {

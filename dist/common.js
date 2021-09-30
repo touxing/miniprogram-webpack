@@ -1,0 +1,2 @@
+(wx.webpackJsonp=wx.webpackJsonp||[]).push([[1],{2:function(t,n){var e=function(t){return(t=t.toString())[1]?t:"0".concat(t)};t.exports={formatTime:function(t){var n=t.getFullYear(),o=t.getMonth()+1,a=t.getDate(),c=t.getHours(),r=t.getMinutes(),u=t.getSeconds();return"".concat([n,o,a].map(e).join("/")," ").concat([c,r,u].map(e).join(":"))}}}}]);
+//# sourceMappingURL=common.js.map
