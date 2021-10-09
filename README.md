@@ -101,3 +101,4 @@ yarn imagemin
 ## 鸣谢
 
 - [listenzz/MyMina](https://github.com/listenzz/MyMina)
+-[WangZhenHao/webpack-in-miniprogram](https://github.com/WangZhenHao/webpack-in-miniprogram)
