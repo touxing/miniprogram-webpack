@@ -96,7 +96,7 @@ yarn imagemin
 
 ## TODO
 
-- [ ] 区分打包目录  dist/dev   dist/prod  dist/test
+- [x] 区分打包目录  dist/dev   dist/prod  dist/test
 
 ## 鸣谢
 

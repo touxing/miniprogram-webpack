@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "webpack --watch --progress",
-    "build": "cross-env NODE_ENV=production BUILD_TYPE=release webpack && yarn imagemin",
-    "build:dev": "cross-env NODE_ENV=development webpack && yarn imagemin",
+    "build": "cross-env NODE_ENV=production BUILD_TYPE=prod webpack",
+    "build:dev": "cross-env NODE_ENV=development BUILD_TYPE=dev webpack",
     "imagemin": "gulp imgCompress",
     "clean": "rm -rf dist/"
   },
