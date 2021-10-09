@@ -8,6 +8,20 @@
     ]
   ],
   "plugins": [
-    "lodash"
+    [
+      "@babel/plugin-transform-modules-commonjs",
+      {
+        "allowTopLevelThis": true
+      }
+    ],
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": 3,
+        "helpers": true,
+        "regenerator": true
+      }
+    ],
+    "lodash" // 优化 lodash 引入体积 https://zhuanlan.zhihu.com/p/36280323
   ]
 }
