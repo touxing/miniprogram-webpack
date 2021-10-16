@@ -88,17 +88,33 @@ yarn imagemin
 ```
 > 非 `production` 环境对图片进行了缓存，需要清除开发缓存执行 `gulp clear`
 
+创建模板
+```
+yarn run create
+```
+
 ## 注意事项
 
 现在很多常用的 `loader` 最新版基本都是适配 `webpack5` 的，实际使用过程中可能会遇到很多问题，需要不断解决。遇到 `sass-loader` 报错尝试降低版本。
 建议不要修改 `package.json` 的安装版本，这里面的版本都是我踩过坑，在 `webpack4` 版本可以正常使用的。
 遇到其他错误，建议 `google`
 
+项目跑起来遇到问题：
+- 安装 `npm install -g windows-build-tools`
+- 尝试重新安装依赖，或者换用 `yarn` 安装依赖。
+- `yarn clean` 删除dist目录，重新 run
+  - 如果执行删除命令报错 `rm` 不是可执行，请手动删除 `dist` 目录
+> 参考：https://blog.csdn.net/deflypig/article/details/107345507
+
 ## TODO
 
 - [x] 区分打包目录  dist/dev   dist/prod  dist/test
+- [x] 新增模板cli命令
 
 ## 鸣谢
 
+> 感谢以下项目提供了参考帮助
+
 - [listenzz/MyMina](https://github.com/listenzz/MyMina)
 - [WangZhenHao/webpack-in-miniprogram](https://github.com/WangZhenHao/webpack-in-miniprogram)
+- [czero1995/miniprogram-cli](https://github.com/czero1995/miniprogram-cli)

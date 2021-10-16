@@ -8,6 +8,7 @@
     "build": "cross-env NODE_ENV=production BUILD_TYPE=prod webpack",
     "build:dev": "cross-env NODE_ENV=development BUILD_TYPE=dev webpack",
     "imagemin": "gulp imgCompress",
+    "create": "node ./cli",
     "clean": "rm -rf dist/"
   },
   "dependencies": {
@@ -46,6 +47,7 @@
     "imagemin-optipng": "^8.0.0",
     "imagemin-pngquant": "^9.0.2",
     "imagemin-svgo": "^10.0.0",
+    "inquirer": "^8.2.0",
     "lodash-webpack-plugin": "^0.11.6",
     "mini-css-extract-plugin": "0.11.3",
     "mozjpeg": "^7.1.0",
