@@ -20,7 +20,6 @@ D:\work\project\wxminiprogram-webpack-demo
 ├── plugin
 |  ├── MinaRuntimePlugin.js   // 提出公共文件 runtime
 |  └── MinaWepackPlugin.js    // 多入口插件
-├── project.config.json       // 小程序项目配置文件
 ├── README.md
 ├── rename.js                 // 批量修改后文件缀名脚本
 ├── src                       // 小程序源码目录
@@ -42,6 +41,7 @@ D:\work\project\wxminiprogram-webpack-demo
 |  |     ├── logs.json
 |  |     ├── logs.wxml
 |  |     └── logs.wxss
+|  ├── project.config.json       // 小程序项目配置文件
 |  ├── sitemap.json
 |  └── utils
 |     └── util.js
