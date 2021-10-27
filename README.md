@@ -127,8 +127,9 @@ yarn wxcli # 封装了交互指令
 
 ## TODO
 
-- [x] 区分打包目录  dist/dev   dist/prod  dist/test
+- [x] 区分打包目录  `dist/dev`   `dist/prod`  `dist/test`
 - [x] 新增模板cli命令
+- [ ] 升级 `webpack5`
 
 ## 鸣谢
 
