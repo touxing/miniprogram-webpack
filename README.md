@@ -93,6 +93,25 @@ yarn imagemin
 yarn run create
 ```
 
+## 开发辅助
+
+### 命令行调用
+> [官方文档](https://developers.weixin.qq.com/miniprogram/dev/devtools/cli.html)
+
+> cli 命令如果不是在开发者工具安装目录运行，需要把执行路径配置包环境变量中
+```bash
+cli --lang zh -h # 查看中文帮助
+```
+
+小程序命令行调用
+- 需要在微信开发者工具，开启`服务端口`
+- 需要全局安装 `zx`(用js写shell脚本的工具) 执行 `npm i -g zx`
+```
+yarn wxcli # 封装了交互指令
+```
+上传和预览的指令在 `zx` 中执行报错，`cli: command not found`
+改为输出命令，自行在终端中执行预览和上传命令
+
 ## 注意事项
 
 现在很多常用的 `loader` 最新版基本都是适配 `webpack5` 的，实际使用过程中可能会遇到很多问题，需要不断解决。遇到 `sass-loader` 报错尝试降低版本。
