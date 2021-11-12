@@ -121,7 +121,7 @@ module.exports = (env, argv) => {
       // EnvironmentPlugin 是一个通过 DefinePlugin 来设置 process.env 环境变量的快捷方式。
       new webpack.EnvironmentPlugin({
         NODE_ENV: JSON.stringify(process.env.NODE_ENV) || 'development',
-        BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'debug',
+        BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'dev',
       }),
       new MinaWepackPlugin({
         scriptExtensions: ['.js'],
