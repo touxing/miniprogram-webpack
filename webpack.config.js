@@ -19,17 +19,21 @@ const fileLoaderFn = name => ({
 })
 module.exports = (env, argv) => {
   const config = {
+    target: 'node', // 小程序是 node 运行环境
     // mode 有三个可能的值，分别是 production, development, none，
     // 小程序不能用 development，所以只有 production 和 none 这两个值。
     mode: debuggable ? 'none' : 'production',
-    // devtool: debuggable ? 'inline-source-map' : 'source-map',
-    devtool: 'none',
+    // 开发环境可选择inline-source-map，正式打包提交则用source-map
+    // devtool不能使用eval系列，小程序不支持
+    // webpack5 打开这里的配置有问题
+    devtool: debuggable ? 'cheap-source-map' : 'source-map',
     context: resolve('src'),
     entry: './app.js',
     output: {
       path: resolve(`dist/${process.env.BUILD_TYPE}`),
       filename: '[name].js',
       globalObject: 'wx',
+      clean: true
     },
     resolve: {
       extensions: ['.js'],
@@ -39,19 +43,13 @@ module.exports = (env, argv) => {
         '@assets': resolve('src/assets'),
       },
     },
-    // stats: 'minimal', //'errors-only',
-    stats: {
-      assets: false,
-      builtAt: false,
-      modules: false,
-      entrypoints: false,
-    },
+    stats: debuggable ? 'minimal' : 'summary',
     module: {
       rules: [
         {
           test: /\.js$/,
           exclude: /(node_modules)/,
-          use: ['cache-loader', 'babel-loader'],
+          use: ['babel-loader'],
         },
         {
           test: /\.s[ac]ss$/i,
@@ -67,17 +65,13 @@ module.exports = (env, argv) => {
                 // 退回使用 node-sass@4.14.1 要低版本
                 // @import 'xxxx.wxss'; 错误
                 // 参考：https://github.com/webpack-contrib/sass-loader/issues/804#issuecomment-582359435
-                implementation: require('node-sass'),
+                implementation: require('sass'),
                 webpackImporter: false, // 禁用 ~，~告诉Webpack导入路径不是相对路径。
                 sassOptions: {
                   includePaths: [resolve('src')],
                   fiber: require('fibers'), // 异步处理
                 },
               },
-            },
-            {
-              loader: 'resolve-url-loader',
-              options: {},
             },
           ],
         },
@@ -121,7 +115,7 @@ module.exports = (env, argv) => {
       // EnvironmentPlugin 是一个通过 DefinePlugin 来设置 process.env 环境变量的快捷方式。
       new webpack.EnvironmentPlugin({
         NODE_ENV: JSON.stringify(process.env.NODE_ENV) || 'development',
-        BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'debug',
+        BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'dev',
       }),
       new MinaWepackPlugin({
         scriptExtensions: ['.js'],
@@ -135,6 +129,7 @@ module.exports = (env, argv) => {
             from: '**/*',
             to: './',
             globOptions: {
+              dot: true,
               gitignore: true,
               ignore: ['**/*.js', '**/*.scss'],
             },
@@ -143,6 +138,7 @@ module.exports = (env, argv) => {
       }),
     ],
     optimization: {
+      // minimize: true,
       splitChunks: {
         chunks: 'all',
         name: 'common',
@@ -151,9 +147,8 @@ module.exports = (env, argv) => {
       },
       runtimeChunk: {
         name: 'runtime',
-        // name: (entrypoint) => `runtimechunk~${entrypoint.name}`,
       },
-    },
+    }
   }
   return config
 }

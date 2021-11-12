@@ -1,16 +1,21 @@
 const SingleEntryPlugin = require('webpack/lib/SingleEntryPlugin')
-const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin')
+// const MultiEntryPlugin = require('webpack/lib/MultiEntryPlugin') // webpack 4
+const EntryPlugin = require('webpack/lib/EntryPlugin')
 const path = require('path')
 const fs = require('fs')
 const replaceExt = require('replace-ext')
 
 const assetsChunkName = '__assets_chunk_name__'
+const PluginName = 'MinaWebpackPlugin'
 
-function itemToPlugin(context, item, name) {
-  if (Array.isArray(item)) {
-    return new MultiEntryPlugin(context, item, name)
+function itemToPlugin(context, entry, options) {
+  if (Array.isArray(entry) && entry.length) {
+    return itemToPlugin(context, entry.shift(), options)
   }
-  return new SingleEntryPlugin(context, item, name)
+  if (typeof entry === 'string') {
+    // console.log('new EntryPlugin(context, item, options)', new EntryPlugin(context, entry, options))
+    return new EntryPlugin(context, entry, options)
+  }
 }
 
 function _inflateEntries(entries = [], dirname, entry) {
@@ -28,7 +33,8 @@ function _inflateEntries(entries = [], dirname, entry) {
     )
 }
 
-function inflateEntries(entries, dirname, entry) {
+function inflateEntries(entries, dirname, entryV5) {
+  let entry = entryV5?.main?.import?.join() || entryV5
   if (/plugin:\/\//.test(entry)) {
     console.log(`发现插件 ${entry}`)
     return
@@ -67,7 +73,11 @@ function all(entry, extensions) {
   return items
 }
 
-class MinaWebpackPlugin {
+function normalizePath(dir) {
+  return './' + dir
+}
+
+module.exports = class MinaWebpackPlugin {
   constructor(options = {}) {
     this.scriptExtensions = options.scriptExtensions || ['.ts', '.js']
     this.assetExtensions = options.assetExtensions || []
@@ -79,16 +89,17 @@ class MinaWebpackPlugin {
 
     this.entries
       .map(item => first(item, this.scriptExtensions))
-       // 把绝对路径转换成相对于 context 的路径
+      // 把绝对路径转换成相对于 context 的路径
       .map(item => path.relative(context, item))
-      .forEach(item => itemToPlugin(context, './' + item, replaceExt(item, '')).apply(compiler))
-       //  应用每一个的入口，生成如下的入口
+      .forEach(item => itemToPlugin(context, normalizePath(item), replaceExt(item, '')).apply(compiler))
+      //  应用每一个的入口，生成如下的入口
       // 'app': './app.js',
       // 'pages/index/index': './pages/index/index.js',
 
     const assets = this.entries
       .reduce((items, item) => [...items, ...all(item, this.assetExtensions)], [])
-      .map(item => './' + path.relative(context, item))
+      .map(item => normalizePath(path.relative(context, item)))
+
     itemToPlugin(context, assets, assetsChunkName).apply(compiler)
 
     if (done) {
@@ -102,27 +113,29 @@ class MinaWebpackPlugin {
     inflateEntries(this.entries, context, entry)
 
     // 这里订阅一个 compiler 的 entryOption 事件，当事件发生时，就会执行回调里面的代码
-    compiler.hooks.entryOption.tap('MinaWebpackPlugin', () => {
+    // 在 entry 配置项处理过之后，执行插件
+    compiler.hooks.entryOption.tap(PluginName, () => {
       this.applyEntry(compiler)
       // 返回 true 告诉 webpack 内置插件就不要处理入口文件了，因为这里已经处理了
       return true
     })
 
-    compiler.hooks.watchRun.tap('MinaWebpackPlugin', (_compiler, done) => {
+    compiler.hooks.watchRun.tap(PluginName, (_compiler, done) => {
+      // 监听模式下，一个新的编译(compilation)触发之后，执行一个插件，但是是在实际编译开始之前。
       this.applyEntry(_compiler, done)
     })
 
-    compiler.hooks.compilation.tap('MinaWebpackPlugin', compilation => {
-      compilation.hooks.beforeChunkAssets.tap('MinaWebpackPlugin', () => {
-        const assetsChunkIndex = compilation.chunks.findIndex(({ name }) => name === assetsChunkName)
-        if (assetsChunkIndex > -1) {
-          // 移除该 chunk，使之不会生成对应的 asset，也就不会输出文件
-          // 如果没有这一步，最后会生成一个 __assets_chunk_name__.js 文件
-          compilation.chunks.splice(assetsChunkIndex, 1)
-        }
+    compiler.hooks.compilation.tap(PluginName, compilation => {
+      compilation.hooks.beforeChunkAssets.tap(PluginName, () => {
+        // compilation.chunks 在 webpack5 中是 Set 不是 Array
+        compilation.chunks.forEach(item => {
+          if (item.name === assetsChunkName) {
+            // 移除该 chunk，使之不会生成对应的 asset，也就不会输出文件
+            // 如果没有这一步，最后会生成一个 __assets_chunk_name__.js 文件
+            compilation.chunks.delete(item)
+          }
+        })
       })
     })
   }
 }
-
-module.exports = MinaWebpackPlugin
