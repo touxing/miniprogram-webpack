@@ -63,9 +63,13 @@ D:\work\project\wxminiprogram-webpack-demo
 
 ## 运行
 
-安装依赖，建议使用 `yarn`
+~~安装依赖，建议使用 `yarn`~~
+改用 pnpm 安装依赖包
+> [pnpm](https://pnpm.io/zh/) 用法和 `yarn` 类似
 ```
 yarn
+# or
+pnpm i
 ```
 
 运行，打开小程序开发者工具查看
@@ -125,11 +129,29 @@ yarn wxcli # 封装了交互指令
   - 如果执行删除命令报错 `rm` 不是可执行，请手动删除 `dist` 目录
 > 参考：https://blog.csdn.net/deflypig/article/details/107345507
 
+
+### 升级 `webpack5` 过程
+
+### `package.json` 中的插件升级
+1.安装 `npm-check-updates`
+```
+npm i -g npm-check-updates
+```
+
+2.检查依赖，在 `package.json` 同级目录执行
+```
+npm-check-updates
+```
+
+
 ## TODO
 
 - [x] 区分打包目录  `dist/dev`   `dist/prod`  `dist/test`
 - [x] 新增模板cli命令
 - [ ] 升级 `webpack5`
+  - [x] `webpack4` 升级 `webpack5`
+  - [x] `.scss` 文件编译不生效问题
+  - [ ] 配置 `runtime` 优化打包体积
 
 ## 鸣谢
 
@@ -138,3 +160,6 @@ yarn wxcli # 封装了交互指令
 - [listenzz/MyMina](https://github.com/listenzz/MyMina)
 - [WangZhenHao/webpack-in-miniprogram](https://github.com/WangZhenHao/webpack-in-miniprogram)
 - [czero1995/miniprogram-cli](https://github.com/czero1995/miniprogram-cli)
+
+参考资料：
+[记录将项目中webpack4升级至webpack5一次成功尝试](https://www.mybj123.com/11258.html)

@@ -26,10 +26,12 @@ module.exports = (env, argv) => {
     // 开发环境可选择inline-source-map，正式打包提交则用source-map
     // devtool不能使用eval系列，小程序不支持
     // webpack5 打开这里的配置有问题
-    devtool: debuggable ? 'cheap-source-map' : 'source-map',
+    // devtool: debuggable ? 'cheap-source-map' : 'source-map',
+    devtool: 'hidden-nosources-cheap-source-map',
     context: resolve('src'),
     entry: './app.js',
     output: {
+      publicPath: '..',
       path: resolve(`dist/${process.env.BUILD_TYPE}`),
       filename: '[name].js',
       globalObject: 'wx',
@@ -121,8 +123,8 @@ module.exports = (env, argv) => {
         scriptExtensions: ['.js'],
         assetExtensions: ['.scss'],
       }),
-      new MinaRuntimePlugin(),
-      new LodashWebpackPlugin(),
+      // new MinaRuntimePlugin(), // TODO: 未实现 runtime
+      // new LodashWebpackPlugin(), // 引入 lodash 开启
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -138,16 +140,17 @@ module.exports = (env, argv) => {
       }),
     ],
     optimization: {
-      // minimize: true,
+      minimize: debuggable ? false : true,
       splitChunks: {
         chunks: 'all',
         name: 'common',
         minChunks: 2,
         minSize: 0,
       },
-      runtimeChunk: {
-        name: 'runtime',
-      },
+      // TODO: 配置 runtime
+      // runtimeChunk: {
+      //   name: 'runtime',
+      // },
     }
   }
   return config

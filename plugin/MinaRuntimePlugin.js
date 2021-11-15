@@ -8,6 +8,7 @@ const { ConcatSource } = require('webpack-sources')
 const requiredPath = require('required-path')
 
 function isRuntimeExtracted(compilation) {
+  // 摸索的代码
   // let flag = false
   // compilation.chunks.forEach(chunk => {
   //   compilation.chunkGraph.getChunkModules(chunk).forEach(module => {
@@ -18,7 +19,10 @@ function isRuntimeExtracted(compilation) {
   //   })
   // })
   // return flag
-  return Array.from(compilation.chunks).some(chunk => chunk.isOnlyInitial() && chunk.hasRuntime() && !chunk.hasEntryModule())
+  // webpack5 的 chunks 是 Set 需要转成 Array
+  return Array.from(compilation.chunks).some(
+    chunk => chunk.isOnlyInitial() && chunk.hasRuntime() && !chunk.hasEntryModule(),
+  )
 }
 
 function script({ dependencies }) {
@@ -33,6 +37,7 @@ class MinaRuntimeWebpackPlugin {
   //（这是自定义插件的公开API）
   constructor(options = {}) {
     this.options = { ...MinaRuntimeWebpackPlugin.defaultOptions, ...options }
+    this.runtime = this.options.runtime
   }
 
   // 在应用默认选项前，先应用用户指定选项
@@ -49,56 +54,49 @@ class MinaRuntimeWebpackPlugin {
     // Compilation 对象提供了对一些有用常量的访问。
     const { Compilation } = webpack
 
-    // RawSource 是其中一种 “源码”("sources") 类型，
-    // 用来在 compilation 中表示资源的源码
-    const { RawSource } = webpack.sources
-
     compiler.hooks.compilation.tap(pluginName, compilation => {
-      // [compilation.mainTemplate, compilation.chunkTemplate]
-      for (let template of [compilation.chunkTemplate]) {
-        // 监听 template 的 renderWithEntry 事件
-        // template.hooks.renderWithEntry.tap
-        // webpack.JavascriptModulesPlugin
-        webpack.javascript.JavascriptModulesPlugin.getCompilationHooks(compilation).render.tap(
-          pluginName,
-          (source, entry) => {
-            if (!isRuntimeExtracted(compilation)) {
-              throw new Error(
-                [
-                  'Please reuse the runtime chunk to avoid duplicate loading of javascript files.',
-                  "Simple solution: set `optimization.runtimeChunk` to `{ name: 'runtime.js' }` .",
-                  'Detail of `optimization.runtimeChunk`: https://webpack.js.org/configuration/optimization/#optimization-runtimechunk .',
-                ].join('\n'),
-              )
-            }
+      // compilation.chunkTemplate.hooks.renderWithEntry.tap // webpack4
 
-            // 如果不是入口 chunk，即不是通过 compilation.addEntry 添加的模块所生成的 chunk，就不要管它
-            if (!entry.chunk.hasEntryModule()) {
-              return source
-            }
+      // webpack.javascript.JavascriptModulesPlugin // webpack5
+      webpack.javascript.JavascriptModulesPlugin.getCompilationHooks(compilation).render.tap(
+        pluginName,
+        (source, entry) => {
+          if (!isRuntimeExtracted(compilation)) {
+            throw new Error(
+              [
+                'Please reuse the runtime chunk to avoid duplicate loading of javascript files.',
+                "Simple solution: set `optimization.runtimeChunk` to `{ name: 'runtime.js' }` .",
+                'Detail of `optimization.runtimeChunk`: https://webpack.js.org/configuration/optimization/#optimization-runtimechunk .',
+              ].join('\n'),
+            )
+          }
 
-            let dependencies = []
-            // 找到该入口 chunk 依赖的其它所有 chunk
-            entry.chunk.groupsIterable.forEach(group => {
-              group.chunks.forEach(chunk => {
-                /**
-                 * assume output.filename is chunk.name here
-                 */
-                let filename = ensurePosix(path.relative(path.dirname(entry.chunk.name), chunk.name))
-
-                if (chunk === entry || ~dependencies.indexOf(filename)) {
-                  return
-                }
-                dependencies.push(filename)
-              })
-            })
-
-            // 在源码前面拼接 runtime 以及公共代码依赖
-            source = new ConcatSource(script({ dependencies }), source)
+          // 如果不是入口 chunk，即不是通过 compilation.addEntry 添加的模块所生成的 chunk，就不要管它
+          if (!entry.chunk.hasEntryModule()) {
             return source
-          },
-        )
-      }
+          }
+
+          let dependencies = []
+          // 找到该入口 chunk 依赖的其它所有 chunk
+          entry.chunk.groupsIterable.forEach(group => {
+            group.chunks.forEach(chunk => {
+              /**
+               * assume output.filename is chunk.name here
+               */
+              let filename = ensurePosix(path.relative(path.dirname(entry.chunk.name), chunk.name))
+
+              if (chunk === entry || ~dependencies.indexOf(filename)) {
+                return
+              }
+              dependencies.push(filename)
+            })
+          })
+
+          // 在源码前面拼接 runtime 以及公共代码依赖
+          source = new ConcatSource(script({ dependencies }), source)
+          return source
+        },
+      )
     })
   }
 }

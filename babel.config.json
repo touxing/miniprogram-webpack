@@ -1,27 +1,30 @@
 {
   "presets": [
     [
-      "@babel/env"
-      // ,{ // 开启这个打包报错
-      //   "useBuiltIns": "usage"
-      // }
+      "@babel/env",
+      { // 启用需要把 corejs 安装到 dependencies
+        "corejs": 3,
+        "useBuiltIns": "usage"
+      }
     ]
   ],
   "plugins": [
+    // 用来兼容 ESModules 方式
     [
       "@babel/plugin-transform-modules-commonjs",
       {
         "allowTopLevelThis": true
       }
     ],
+    // TODO: runtime 配置成功，开启这里
+    // 可以重复使用 Babel 注入的帮助程序代码来节省代码的插件
     [
       "@babel/plugin-transform-runtime",
       {
         "corejs": 3,
-        "helpers": true,
-        "regenerator": true
+        "helpers": false
       }
-    ],
-    "lodash" // 优化 lodash 引入体积 https://zhuanlan.zhihu.com/p/36280323
+    ]
+    // "lodash" // 优化 lodash 引入体积 https://zhuanlan.zhihu.com/p/36280323
   ]
 }

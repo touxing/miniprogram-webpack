@@ -6,16 +6,12 @@ const fs = require('fs')
 const replaceExt = require('replace-ext')
 
 const assetsChunkName = '__assets_chunk_name__'
-const PluginName = 'MinaWebpackPlugin'
 
-function itemToPlugin(context, entry, options) {
-  if (Array.isArray(entry) && entry.length) {
-    return itemToPlugin(context, entry.shift(), options)
+function itemToPlugin(context, entry, name) {
+  if (typeof entry !== 'string') {
+    throw new Error([`Please confirm entry is string.`, `eg: entry: './pages\\index\\index.scss'`].join('\n'))
   }
-  if (typeof entry === 'string') {
-    // console.log('new EntryPlugin(context, item, options)', new EntryPlugin(context, entry, options))
-    return new EntryPlugin(context, entry, options)
-  }
+  return new EntryPlugin(context, entry, { name })
 }
 
 function _inflateEntries(entries = [], dirname, entry) {
@@ -77,7 +73,7 @@ function normalizePath(dir) {
   return './' + dir
 }
 
-module.exports = class MinaWebpackPlugin {
+class MinaWebpackPlugin {
   constructor(options = {}) {
     this.scriptExtensions = options.scriptExtensions || ['.ts', '.js']
     this.assetExtensions = options.assetExtensions || []
@@ -92,15 +88,15 @@ module.exports = class MinaWebpackPlugin {
       // 把绝对路径转换成相对于 context 的路径
       .map(item => path.relative(context, item))
       .forEach(item => itemToPlugin(context, normalizePath(item), replaceExt(item, '')).apply(compiler))
-      //  应用每一个的入口，生成如下的入口
-      // 'app': './app.js',
-      // 'pages/index/index': './pages/index/index.js',
+    //  应用每一个的入口，生成如下的入口
+    // 'app': './app.js',
+    // 'pages/index/index': './pages/index/index.js',
 
-    const assets = this.entries
+    // scss 文件入口
+    this.entries
       .reduce((items, item) => [...items, ...all(item, this.assetExtensions)], [])
       .map(item => normalizePath(path.relative(context, item)))
-
-    itemToPlugin(context, assets, assetsChunkName).apply(compiler)
+      .forEach(item => itemToPlugin(context, item, assetsChunkName).apply(compiler))
 
     if (done) {
       done()
@@ -109,24 +105,25 @@ module.exports = class MinaWebpackPlugin {
 
   // apply是每一个插件的入口
   apply(compiler) {
+    const pluginName = MinaWebpackPlugin.name
     const { context, entry } = compiler.options
     inflateEntries(this.entries, context, entry)
 
     // 这里订阅一个 compiler 的 entryOption 事件，当事件发生时，就会执行回调里面的代码
     // 在 entry 配置项处理过之后，执行插件
-    compiler.hooks.entryOption.tap(PluginName, () => {
+    compiler.hooks.entryOption.tap(pluginName, () => {
       this.applyEntry(compiler)
       // 返回 true 告诉 webpack 内置插件就不要处理入口文件了，因为这里已经处理了
       return true
     })
 
-    compiler.hooks.watchRun.tap(PluginName, (_compiler, done) => {
+    compiler.hooks.watchRun.tap(pluginName, (_compiler, done) => {
       // 监听模式下，一个新的编译(compilation)触发之后，执行一个插件，但是是在实际编译开始之前。
       this.applyEntry(_compiler, done)
     })
 
-    compiler.hooks.compilation.tap(PluginName, compilation => {
-      compilation.hooks.beforeChunkAssets.tap(PluginName, () => {
+    compiler.hooks.compilation.tap(pluginName, compilation => {
+      compilation.hooks.beforeChunkAssets.tap(pluginName, () => {
         // compilation.chunks 在 webpack5 中是 Set 不是 Array
         compilation.chunks.forEach(item => {
           if (item.name === assetsChunkName) {
@@ -139,3 +136,5 @@ module.exports = class MinaWebpackPlugin {
     })
   }
 }
+
+module.exports = MinaWebpackPlugin
