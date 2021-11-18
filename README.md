@@ -148,10 +148,11 @@ npm-check-updates
 
 - [x] 区分打包目录  `dist/dev`   `dist/prod`  `dist/test`
 - [x] 新增模板cli命令
-- [ ] 升级 `webpack5`
+- [x] 升级 `webpack5`
   - [x] `webpack4` 升级 `webpack5`
   - [x] `.scss` 文件编译不生效问题
-  - [ ] 配置 `runtime` 优化打包体积
+  - [x] 配置 `runtime` 优化打包体积
+    - 编写了一个 `WeappRuntimePlugin.js` 插件处理 runtime 主要逻辑是替换开启 runtime 优化后，引入路径不正确的问题
 
 ## 鸣谢
 

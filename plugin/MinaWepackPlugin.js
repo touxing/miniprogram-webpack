@@ -69,15 +69,15 @@ function all(entry, extensions) {
   return items
 }
 
-function normalizePath(dir) {
-  return './' + dir
-}
-
 class MinaWebpackPlugin {
   constructor(options = {}) {
     this.scriptExtensions = options.scriptExtensions || ['.ts', '.js']
     this.assetExtensions = options.assetExtensions || []
     this.entries = []
+  }
+
+  normalizePath(dir) {
+    return './' + dir
   }
 
   applyEntry(compiler, done) {
@@ -87,7 +87,7 @@ class MinaWebpackPlugin {
       .map(item => first(item, this.scriptExtensions))
       // 把绝对路径转换成相对于 context 的路径
       .map(item => path.relative(context, item))
-      .forEach(item => itemToPlugin(context, normalizePath(item), replaceExt(item, '')).apply(compiler))
+      .forEach(item => itemToPlugin(context, this.normalizePath(item), replaceExt(item, '')).apply(compiler))
     //  应用每一个的入口，生成如下的入口
     // 'app': './app.js',
     // 'pages/index/index': './pages/index/index.js',
@@ -95,7 +95,7 @@ class MinaWebpackPlugin {
     // scss 文件入口
     this.entries
       .reduce((items, item) => [...items, ...all(item, this.assetExtensions)], [])
-      .map(item => normalizePath(path.relative(context, item)))
+      .map(item => this.normalizePath(path.relative(context, item)))
       .forEach(item => itemToPlugin(context, item, assetsChunkName).apply(compiler))
 
     if (done) {

@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MinaWepackPlugin = require('./plugin/MinaWepackPlugin')
-const MinaRuntimePlugin = require('./plugin/MinaRuntimePlugin')
+const WeappRuntimePlugin = require('./plugin/WeappRuntimePlugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const LodashWebpackPlugin = require('lodash-webpack-plugin')
 const debuggable = process.env.BUILD_TYPE != 'prod'
@@ -123,8 +123,8 @@ module.exports = (env, argv) => {
         scriptExtensions: ['.js'],
         assetExtensions: ['.scss'],
       }),
-      // new MinaRuntimePlugin(), // TODO: 未实现 runtime
       // new LodashWebpackPlugin(), // 引入 lodash 开启
+      new WeappRuntimePlugin(),
       new CopyWebpackPlugin({
         patterns: [
           {
@@ -147,10 +147,9 @@ module.exports = (env, argv) => {
         minChunks: 2,
         minSize: 0,
       },
-      // TODO: 配置 runtime
-      // runtimeChunk: {
-      //   name: 'runtime',
-      // },
+      runtimeChunk: {
+        name: 'runtime',
+      },
     }
   }
   return config

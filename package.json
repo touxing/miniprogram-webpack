@@ -8,6 +8,7 @@
     "env:test": "cross-env NODE_ENV=development BUILD_TYPE=test ",
     "env:prod": "cross-env NODE_ENV=production BUILD_TYPE=prod",
     "debug": "yarn env:dev webpack --progress",
+    "debug:build": "yarn env:prod webpack --progress",
     "dev": "yarn env:dev gulp imgCompress && yarn env:dev webpack --watch --progress",
     "build": "yarn env:prod webpack && yarn env:prod gulp imgCompress",
     "test": "yarn env:test gulp imgCompress && yarn env:test webpack --watch ",
