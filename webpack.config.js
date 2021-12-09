@@ -4,6 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MinaWepackPlugin = require('./plugin/MinaWepackPlugin')
 const MinaRuntimePlugin = require('./plugin/MinaRuntimePlugin')
+const MinaPreviewPlugin = require('./plugin/MinaPreviewPlugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const LodashWebpackPlugin = require('lodash-webpack-plugin')
 const debuggable = process.env.BUILD_TYPE != 'prod'
@@ -141,6 +142,10 @@ module.exports = (env, argv) => {
           },
         ],
       }),
+      new MinaPreviewPlugin({
+        ignore: ['assets', 'cloudfunctions', 'common', 'node_modules', 'miniprogram_npm'],
+        output: resolve(`dist/${process.env.BUILD_TYPE}`)
+      })
     ],
     optimization: {
       splitChunks: {

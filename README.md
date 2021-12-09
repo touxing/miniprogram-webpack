@@ -129,7 +129,11 @@ yarn wxcli # 封装了交互指令
 
 - [x] 区分打包目录  `dist/dev`   `dist/prod`  `dist/test`
 - [x] 新增模板cli命令
-- [ ] 升级 `webpack5`
+- [x] 升级 `webpack5` 在 `dev` 分支
+- [x] 开发者工具 `真机调试` 不了，报错 `xxx does not exits`
+  - 原因： `webpack` 开启 `minimizer` 优化无用代码输出，历史项目有一些冗余代码，没有打包输出 `js` 文件，
+  输出目录中只有 `.json` `.wxml` `.wxss` 文件，导致 真机调试 时报错找不到相关的组件。
+  - 解决：写一个插件 `MinaPreviewPlugin` 删除打包后导致报错的冗余文件
 
 ## 鸣谢
 
