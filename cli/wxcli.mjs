@@ -1,11 +1,12 @@
-#!/usr/bin/env zx
+#!/usr/bin/env node
 const path = require('path')
+const chalk = require('chalk')
 const figlet = require('figlet')
 const inquirer = require('inquirer')
-
-// $.shell = path.resolve('C:/Windows/system32/cmd')
+const shelljs = require('shelljs')
 
 const commandMap = {
+  open: '打开小程序',
   build: '打包',
   preview: '预览',
   upload: '上传',
@@ -13,9 +14,10 @@ const commandMap = {
 const envMap = {
   production: '生产',
   test: '测试',
+  dev: '开发',
 }
 
-const resolve = (dir) => {
+const resolve = dir => {
   return path.join(__dirname, '..', dir)
 }
 
@@ -25,14 +27,14 @@ const askQuestions = () => {
       type: 'rawlist',
       name: 'Command',
       message: '请选择执行',
-      choices: [commandMap.build, commandMap.preview, commandMap.upload],
-      default: commandMap.preview,
+      choices: [commandMap.open, commandMap.build, commandMap.preview, commandMap.upload],
+      default: commandMap.open,
     },
     {
       type: 'rawlist',
       name: 'Env',
       message: '请选择环境',
-      choices: [envMap.production, envMap.test],
+      choices: [envMap.production, envMap.test, envMap.dev],
       default: envMap.production,
     },
   ]
@@ -44,14 +46,14 @@ const askQuestions2 = () => {
     {
       type: 'input',
       name: 'Version',
-      message: '请输入版本号（eg: 2.0.1）',
+      message: '请输入版本号(eg: 2.0.1)',
       default: '2.0.1',
     },
     {
       type: 'input',
       name: 'Desc',
       message: '请输入项目备注',
-      default: 'time:' + Date.now(),
+      default: 'timestamp:' + Date.now(),
     },
   ]
   return inquirer.prompt(questions)
@@ -68,16 +70,21 @@ const init = () => {
   )
 }
 
-const build = async () => {
-  await $`yarn build`
+const open = output => {
+  shelljs.exec(`cli open --project ${output}`)
 }
-const preview = async output => {
-  let cmd = `cli preview --project ${output}`
-  await $`echo ${cmd}`
+const build = () => {
+  shelljs.exec(`yarn build`)
 }
-const upload = async (output, version, desc) => {
-  let cmd = `cli upload -v ${version} -d ${desc} --project ${output}`.replace(/\$/g, '')
-  await $`echo ${cmd}`
+const preview = output => {
+  let cmd = `cli preview --qr-size small --project ${output}`
+  console.log(chalk.bold.green(cmd))
+  shelljs.exec(cmd)
+}
+const upload = (output, version, desc) => {
+  let cmd = `cli upload -v ${version} -d "${desc}" --project ${output}`.replace(/\$/g, '')
+  console.log(chalk.bold.green(cmd))
+  shelljs.exec(cmd)
 }
 
 const run = async () => {
@@ -93,8 +100,14 @@ const run = async () => {
     case envMap.test:
       output = resolve('./dist/test')
       break
+    case envMap.dev:
+      output = resolve('./dist/dev')
+      break
   }
   switch (Command) {
+    case commandMap.open:
+      open(output)
+      break
     case commandMap.build:
       build()
       break

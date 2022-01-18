@@ -12,7 +12,7 @@
     "dev": "yarn env:dev gulp imgCompress && yarn env:dev webpack --watch --progress",
     "build": "yarn env:prod webpack && yarn env:prod gulp imgCompress",
     "test": "yarn env:test gulp imgCompress && yarn env:test webpack --watch ",
-    "wxcli": "zx ./cli/wxcli.mjs",
+    "wxcli": "node ./cli/wxcli.mjs",
     "create": "node ./cli",
     "img": "webpack --config webpack.img.js",
     "imagemin": "yarn env:dev gulp imgCompress",
@@ -63,6 +63,7 @@
     "required-path": "^1.0.1",
     "sass": "^1.43.4",
     "sass-loader": "^12.3.0",
+    "shelljs": "^0.8.5",
     "url-loader": "^4.1.1",
     "webpack": "5.64.0",
     "webpack-cli": "^4.9.1"
