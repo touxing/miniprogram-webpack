@@ -57,6 +57,9 @@ class WeappRuntimePlugin {
               const replaceSource = new RawSource(source._valueAsString)
               // compilation.assets[pathname] = new ConcatSource('/**添加的内容到输出文件**/', '\n', source)
               compilation.assets[pathname] = replaceSource
+            } else if(source._children?.length && source._children[1]) { // [RawSrouce, SrouceMapSource]
+              // 开启优化模式，资源在这里处理
+              source._children[1]._valueAsString = source._children[1]._valueAsString.replace('./runtime.js', runtimePath)
             }
           })
           callback()
