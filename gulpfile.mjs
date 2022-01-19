@@ -34,7 +34,7 @@ export function imgCompress(cb) {
   // 需要单独引入优化器
   src('src/**/*.{png,jpg,jpeg,gif,svg,webp}')
     .pipe(gulpif(!isProduction, cache(imageOption), imageOption))
-    .pipe(dest('dist'))
+    .pipe(dest(`dist/${BUILD_TYPE}`))
 
   cb()
 }
