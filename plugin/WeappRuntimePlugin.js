@@ -50,7 +50,7 @@ class WeappRuntimePlugin {
         (assets, callback) => {
           Object.entries(assets).forEach(([pathname, source]) => {
             // todo: 取得依赖 runtime.js 的 chunk 的相对路径
-            if (/pages.*\.js$/.test(pathname)) {
+            if (/\.js$/.test(pathname)) {
               //! 非根目录下的js文件，都遍历替换 runtime.js
               let runtimePath = this.normalizeRuntimePath(path.relative(pathname, this.options.runtimeChunk.name))
               source._valueAsString = source._valueAsString.replace('./runtime.js', runtimePath)
