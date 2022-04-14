@@ -11,6 +11,8 @@ import minimist from 'minimist'
 const argv = minimist(process.argv.slice(2)) // 获取命令行输入参数 eg: --env=dev
 
 const isProduction = argv.env === 'production' || process.env.NODE_ENV === 'production'
+const BUILD_TYPE = argv.BUILD_TYPE || process.env.BUILD_TYPE
+
 // 帮助信息
 export function help(cb) {
   console.log('[imgCompress]  #压缩图片')

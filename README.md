@@ -96,7 +96,14 @@ yarn imagemin
 ```
 yarn run create
 ```
+环境说明：
+```
+npm run dev # 开发环境
+npm run test # 测试环境
+npm run build # 生产环境
+```
 
+遇到问题请看[注意事项](#注意事项)
 ## 开发辅助
 
 ### 命令行调用
@@ -109,12 +116,10 @@ cli --lang zh -h # 查看中文帮助
 
 小程序命令行调用
 - 需要在微信开发者工具，开启`服务端口`
-- 需要全局安装 `zx`(用js写shell脚本的工具) 执行 `npm i -g zx`
+- 需要全局安装 `shelljs`(用js写shell脚本的工具) 执行 `npm i -g shelljs`
 ```
 yarn wxcli # 封装了交互指令
 ```
-上传和预览的指令在 `zx` 中执行报错，`cli: command not found`
-改为输出命令，自行在终端中执行预览和上传命令
 
 ## 注意事项
 
@@ -128,7 +133,11 @@ yarn wxcli # 封装了交互指令
 - `yarn clean` 删除dist目录，重新 run
   - 如果执行删除命令报错 `rm` 不是可执行，请手动删除 `dist` 目录
 > 参考：https://blog.csdn.net/deflypig/article/details/107345507
+如果项目跑起来 `npm run dev` 后，打开dist目录下的小程序无法运行
 
+安装**微信开发者工具版本：Stable 1.05.2111300** 用其他版本可能会有异常，无法运行项目，这是开发者工具的问题
+
+小程序开发者工具运行有问题，尝试重启开发者工具或重新 `npm run`
 
 ### 升级 `webpack5` 过程
 
