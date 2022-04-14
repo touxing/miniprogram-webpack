@@ -163,6 +163,35 @@ npm-check-updates
   - [x] 配置 `runtime` 优化打包体积
     - 编写了一个 `WeappRuntimePlugin.js` 插件处理 runtime 主要逻辑是替换开启 runtime 优化后，引入路径不正确的问题
 
+按需添加埋点自动埋点系统
+
+```js
+import { init as trackerInit } from './lib/weapptracker.js'
+import { tracks } from './config/buried_point_conf/index.js'
+
+// 初始化埋点
+trackerInit({
+  url: 'https://httpbin.org/post', // 测试地址
+  autoTrack: {
+    appLaunch: true,
+    appHide: false,
+    appShow: false,
+    pageShow: false,
+    pageHide: false,
+    pageUnload: false,
+    onShare: false,
+  },
+  delay: 2000,
+  tracks,
+  success(reporterInstance) {
+    // 对接第三方埋点系统
+    // test_thried_ok().then((reporter) => {
+    //   let buriedSystem = reporterInstance.getSingleton()
+    //   buriedSystem.changeReporterEngine(reporter)
+    // })
+  },
+})
+```
 ## 鸣谢
 
 > 感谢以下项目提供了参考帮助

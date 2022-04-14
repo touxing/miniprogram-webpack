@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="container">
+<view class="container" catch:tap="elementTracker">
   <view class="userinfo">
     <block wx:if="{{canIUseOpenData}}">
       <view class="userinfo-avatar" bindtap="bindViewTap">
@@ -20,4 +20,5 @@
   <view class="usermotto">
     <text class="user-motto">{{motto}}</text>
   </view>
+  <view class="test-send" catch:tap="testSend">testSend</view>
 </view>
