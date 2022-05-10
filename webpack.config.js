@@ -35,7 +35,7 @@ module.exports = (env, argv) => {
       path: resolve(`dist/${process.env.BUILD_TYPE}`),
       filename: '[name].js',
       globalObject: 'wx',
-      clean: true
+      // clean: true
     },
     resolve: {
       extensions: ['.js'],
@@ -109,11 +109,11 @@ module.exports = (env, argv) => {
     },
     plugins: [
       new webpack.ProgressPlugin(),
-      new CleanWebpackPlugin({
-        // Automatically remove all unused webpack assets on rebuild
-        // rebuild 时自动删除未使用的资源，false:不需要
-        cleanStaleWebpackAssets: false,
-      }),
+      // new CleanWebpackPlugin({
+      //   // Automatically remove all unused webpack assets on rebuild
+      //   // rebuild 时自动删除未使用的资源，false:不需要
+      //   cleanStaleWebpackAssets: false,
+      // }),
       // EnvironmentPlugin 是一个通过 DefinePlugin 来设置 process.env 环境变量的快捷方式。
       new webpack.EnvironmentPlugin({
         NODE_ENV: JSON.stringify(process.env.NODE_ENV) || 'development',
@@ -125,19 +125,19 @@ module.exports = (env, argv) => {
       }),
       // new LodashWebpackPlugin(), // 引入 lodash 开启
       new WeappRuntimePlugin(),
-      new CopyWebpackPlugin({
-        patterns: [
-          {
-            from: '**/*',
-            to: './',
-            globOptions: {
-              dot: true,
-              gitignore: true,
-              ignore: ['**/*.js', '**/*.scss'],
-            },
-          },
-        ],
-      }),
+      // new CopyWebpackPlugin({
+      //   patterns: [
+      //     {
+      //       from: '**/*',
+      //       to: './',
+      //       globOptions: {
+      //         dot: true,
+      //         gitignore: true,
+      //         ignore: ['**/*.js', '**/*.scss'],
+      //       },
+      //     },
+      //   ],
+      // }),
     ],
     optimization: {
       minimize: debuggable ? false : true,

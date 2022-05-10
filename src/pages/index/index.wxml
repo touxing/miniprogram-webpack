@@ -1,24 +1,101 @@
-<!--index.wxml-->
-<view class="container" catch:tap="elementTracker">
-  <view class="userinfo">
-    <block wx:if="{{canIUseOpenData}}">
-      <view class="userinfo-avatar" bindtap="bindViewTap">
-        <open-data type="userAvatarUrl"></open-data>
-      </view>
-      <open-data type="userNickName"></open-data>
-    </block>
-    <block wx:elif="{{!hasUserInfo}}">
-      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-      <view wx:else> 请使用1.4.4及以上版本基础库 </view>
-    </block>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
-  </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
-  </view>
-  <view class="test-send" catch:tap="testSend">testSend</view>
+<view class="page" data-weui-theme="{{theme}}">
+  <mp-toptips msg="{{error}}" type="error" show="{{error}}"></mp-toptips>
+
+  <mp-form-page catch:tap="testCloud" title="表单结构" subtitle="展示表单页面的信息结构样式, 分别由头部区域/控件区域/提示区域/操作区域和底部信息区域组成。">
+    <mp-form id="form" rules="{{rules}}" models="{{formData}}">
+      <mp-cells title="表单" footer="底部说明文字底部说明文字">
+        <label>
+          <mp-cell prop="name" title="名称" ext-class="">
+            <input bindinput="formInputChange" data-field="name" class="weui-input" placeholder="请输入名称" />
+          </mp-cell>
+        </label>
+        <label>
+          <mp-cell title="有无实物">
+            <mp-checkbox-group prop="radio" multi="{{false}}">
+              <label class="radio-w" for="{{item.value}}" wx:for="{{radioItems}}" wx:key="value"
+                     data-value="{{item.value}}" bind:tap="radioChange">
+                <radio key="{{item.value}}" value="{{item.value}}" checked="{{item.checked}}">{{item.name}}</radio>
+              </label>
+            </mp-checkbox-group>
+          </mp-cell>
+        </label>
+        <label>
+          <mp-cell ext-class="weui-cell_select weui-cell_select-after">
+            <view slot="title" class="weui-label">资产状态</view>
+            <picker bindchange="bindAssetStateChange" value="{{assetStateIndex}}" range="{{assetStates}}">
+              <view class="weui-select">{{assetStates[assetStateIndex]}}</view>
+            </picker>
+          </mp-cell>
+        </label>
+        <label>
+          <mp-cell prop="administrativeNum" title="行政编码" ext-class="">
+            <input bindinput="formInputChange" value="{{formData.administrativeNum}}" data-field="administrativeNum"
+                   class="weui-input" placeholder="请输入行政编码" />
+            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="scanCode"
+                     data-field="administrativeNum"></mp-icon>
+          </mp-cell>
+        </label>
+        <label>
+          <mp-cell prop="factoryNum" title="出厂编号" ext-class="">
+            <input bindinput="formInputChange" value="{{formData.factoryNum}}" data-field="factoryNum"
+                   class="weui-input" placeholder="请输入出厂编号" />
+            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="scanCode"
+                     data-field="factoryNum"></mp-icon>
+          </mp-cell>
+        </label>
+        <label>
+          <mp-cell prop="modelType" title="型号" ext-class="">
+            <input bindinput="formInputChange" value="{{formData.modelType}}" data-field="modelType" class="weui-input"
+                   placeholder="请输入型号" />
+            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="scanCode"
+                     data-field="modelType"></mp-icon>
+          </mp-cell>
+        </label>
+        <label>
+          <mp-cell prop="qualifiedNum" title="合格证编码" ext-class="">
+            <input bindinput="formInputChange" value="{{formData.qualifiedNum}}" data-field="qualifiedNum"
+                   class="weui-input" placeholder="请输入合格证编码" />
+            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="scanCode"
+                     data-field="qualifiedNum"></mp-icon>
+          </mp-cell>
+        </label>
+        <label>
+          <mp-cell prop="date" title="合格证日期" ext-class="">
+            <picker data-field="date" mode="date" value="{{date}}" start="2015-09-01" end="2017-09-01"
+                    bindchange="bindDateChange">
+              <view class="weui-input">{{date}}</view>
+            </picker>
+          </mp-cell>
+        </label>
+      </mp-cells>
+
+      <mp-cells title="图片">
+        <mp-cell>
+          <mp-uploader bindfail="uploadError" bindsuccess="uploadSuccess" bindselect="chooseImage"
+                       binddelete="deleteImage" select="{{selectFile}}" files="{{files}}" max-count="1"
+                       data-field="files" title="合格证高清图"></mp-uploader>
+        </mp-cell>
+        <mp-cell>
+          <mp-uploader bindfail="uploadError" bindsuccess="uploadSuccess" bindselect="chooseImage"
+                       binddelete="deleteImage" select="{{selectFile}}" files="{{files2}}" max-count="1"
+                       data-field="files2" title="资产标签高清图"></mp-uploader>
+        </mp-cell>
+        <mp-cell>
+          <mp-uploader bindfail="uploadError" bindsuccess="uploadSuccess" bindselect="chooseImage"
+                       binddelete="deleteImage" select="{{selectFile}}" files="{{files3}}" max-count="1"
+                       data-field="files3" title="资产自带标签高清图"></mp-uploader>
+        </mp-cell>
+      </mp-cells>
+      <mp-cells title="备注">
+        <mp-cell has-header="{{false}}" has-footer="{{false}}" title="" ext-class="">
+          <textarea class="weui-textarea" placeholder="请输入备注" style="height: 3.3em" />
+          <view class="weui-textarea-counter">0/200</view>
+        </mp-cell>
+      </mp-cells>
+    </mp-form>
+
+    <view slot="button">
+      <button class="weui-btn" type="primary" bindtap="submitForm">确定</button>
+    </view>
+  </mp-form-page>
 </view>

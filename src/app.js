@@ -2,6 +2,12 @@ const env = require(`./env/env.${process.env.BUILD_TYPE}.js`)
 // 如果需要 lodash 请安装 yarn add lodash
 // import { camelCase } from 'lodash'
 
+// 初始化云开发环境
+wx.cloud.init({
+  env: 'cloud1-4ghc9hzg3b811f0b',
+  traceUser: true,
+})
+
 App({
   onLaunch() {
     console.log('env', env)

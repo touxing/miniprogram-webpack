@@ -1,19 +1,10 @@
-/**index.wxss**/
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #aaa;
+.weui-agree .weui-agree__text {
+  display: inline;
 }
 
-.userinfo-avatar {
-  overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
+.radio-w {
+  padding: 0 20rpx;
 }
-
-.usermotto {
-  margin-top: 200px;
+.h-full {
+  height: 100%;
 }
