@@ -1,4 +1,6 @@
 # 小程序工程化实战 + webpack
+> webpack 已升级到 `webpack5` 在 `webpack5` 分支
+> 建议使用 [webpack5](https://github.com/touxing/miniprogram-webpack/tree/webpack5) 分支
 
 **基于 webpack4 的小程序打包工具**
 支持：
@@ -96,7 +98,7 @@ yarn imagemin
 
 ## TODO
 
-- [ ] 区分打包目录  dist/dev   dist/prod  dist/test
+- [x] 区分打包目录  dist/dev   dist/prod  dist/test
 
 ## 鸣谢
 
