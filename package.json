@@ -4,12 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack --watch --progress",
+    "dev": "cross-env NODE_ENV=development BUILD_TYPE=dev webpack --watch --progress",
     "build": "cross-env NODE_ENV=production BUILD_TYPE=prod webpack",
     "build:dev": "cross-env NODE_ENV=development BUILD_TYPE=dev webpack",
     "imagemin": "gulp imgCompress",
     "create": "node ./cli",
-    "wxcli": "node ./cli/wxcli.mjs",
+    "wxcli": "node ./cli/wxcli.js",
     "clean": "rm -rf dist/"
   },
   "dependencies": {
@@ -58,6 +58,7 @@
     "resolve-url-loader": "^4.0.0",
     "sass": "^1.42.1",
     "sass-loader": "8.0.2",
+    "shelljs": "^0.8.5",
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^4.46.0",

@@ -1,12 +1,12 @@
 {
   "description": "项目配置文件",
-  "miniprogramRoot": "dist/",
+  "miniprogramRoot": "./",
   "packOptions": {
     "ignore": []
   },
   "setting": {
     "urlCheck": false,
-    "es6": false,
+    "es6": true,
     "enhance": false,
     "postcss": true,
     "preloadBackgroundData": false,
@@ -42,7 +42,7 @@
   "compileType": "miniprogram",
   "libVersion": "2.19.5",
   "appid": "wxa846125c60ebbd60",
-  "projectname": "miniprogram-3",
+  "projectname": "webpackWxMiniDemo",
   "debugOptions": {
     "hidedInDevtools": []
   },

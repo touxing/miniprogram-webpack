@@ -7,6 +7,11 @@
 - es6、Promise、async/await
 - scss
 
+## 要求准备
+
+- node >= 12
+- 小程序开发者工具版本：`Stable 1.05.2111300`， 用其他版本可能会有异常，无法运行项目，这是开发者工具的问题
+
 ## 初始化项目
 
 clone 项目下来
@@ -56,12 +61,13 @@ D:\work\project\wxminiprogram-webpack-demo
 
 **迁移已有小程序项目**
 1. 删掉 `src` 目录下的内容，把小程序项目 copy 到 src 目录下
-2. 替换 `project.config.json` 文件，放到根目录下
-3. 配置小程序跟目录 `project.config.json` 添加
-```
-"miniprogramRoot": "dist/",
-"cloudfunctionRoot": "dist/cloudfunctions/",  // 可选，如果是有云开发需求
-```
+
+2. 可选配置
+> 注意: 根据实际开发需要配置小程序跟目录 `project.config.json`
+> ```
+> "miniprogramRoot": "./", // 配置小程序根路径
+> "cloudfunctionRoot": "dist/cloudfunctions/",  // 可选，如果是有云开发需求
+> ```
 
 ## 运行
 

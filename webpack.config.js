@@ -76,10 +76,6 @@ module.exports = (env, argv) => {
                 },
               },
             },
-            {
-              loader: 'resolve-url-loader',
-              options: {},
-            },
           ],
         },
         {
