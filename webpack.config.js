@@ -4,9 +4,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const MinaWepackPlugin = require('./plugin/MinaWepackPlugin')
 const MinaRuntimePlugin = require('./plugin/MinaRuntimePlugin')
+const MinaPreviewPlugin = require('./plugin/MinaPreviewPlugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const LodashWebpackPlugin = require('lodash-webpack-plugin')
-const debuggable = process.env.BUILD_TYPE != 'release'
+const debuggable = process.env.BUILD_TYPE != 'prod'
 
 // 文件复制处理
 const fileLoaderFn = name => ({
@@ -22,11 +23,12 @@ module.exports = (env, argv) => {
     // mode 有三个可能的值，分别是 production, development, none，
     // 小程序不能用 development，所以只有 production 和 none 这两个值。
     mode: debuggable ? 'none' : 'production',
-    devtool: debuggable ? 'inline-source-map' : 'source-map',
+    // devtool: debuggable ? 'inline-source-map' : 'source-map',
+    devtool: 'none',
     context: resolve('src'),
     entry: './app.js',
     output: {
-      path: resolve('dist'),
+      path: resolve(`dist/${process.env.BUILD_TYPE}`),
       filename: '[name].js',
       globalObject: 'wx',
     },
@@ -37,6 +39,13 @@ module.exports = (env, argv) => {
         '@vant': resolve('src/node_modules/@vant'),
         '@assets': resolve('src/assets'),
       },
+    },
+    // stats: 'minimal', //'errors-only',
+    stats: {
+      assets: false,
+      builtAt: false,
+      modules: false,
+      entrypoints: false,
     },
     module: {
       rules: [
@@ -110,9 +119,10 @@ module.exports = (env, argv) => {
         // rebuild 时自动删除未使用的资源，false:不需要
         cleanStaleWebpackAssets: false,
       }),
+      // EnvironmentPlugin 是一个通过 DefinePlugin 来设置 process.env 环境变量的快捷方式。
       new webpack.EnvironmentPlugin({
         NODE_ENV: JSON.stringify(process.env.NODE_ENV) || 'development',
-        BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'debug',
+        BUILD_TYPE: JSON.stringify(process.env.BUILD_TYPE) || 'dev',
       }),
       new MinaWepackPlugin({
         scriptExtensions: ['.js'],
@@ -132,6 +142,10 @@ module.exports = (env, argv) => {
           },
         ],
       }),
+      new MinaPreviewPlugin({
+        ignore: ['assets', 'cloudfunctions', 'common', 'node_modules', 'miniprogram_npm'],
+        output: resolve(`dist/${process.env.BUILD_TYPE}`)
+      })
     ],
     optimization: {
       splitChunks: {

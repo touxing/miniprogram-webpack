@@ -1,0 +1,5 @@
+<bodyCard showHeader="{{true}}" title="title">
+  <view slot="com-content" class="container">
+
+  </view>
+</bodyCard>
