@@ -13,7 +13,14 @@ const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : `0${n}`
 }
+exports.formatTime = formatTime
 
-module.exports = {
-  formatTime
+/**
+ * 文件转成base64
+ * @param {String} filePath
+ */
+function fileToBase64(filePath) {
+  return wx.getFileSystemManager().readFileSync(filePath, 'base64')
 }
+
+exports.fileToBase64 = fileToBase64

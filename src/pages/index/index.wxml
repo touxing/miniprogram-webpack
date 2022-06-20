@@ -1,12 +1,12 @@
 <view class="page" data-weui-theme="{{theme}}">
   <mp-toptips msg="{{error}}" type="error" show="{{error}}"></mp-toptips>
 
-  <mp-form-page catch:tap="testCloud" title="表单结构" subtitle="展示表单页面的信息结构样式, 分别由头部区域/控件区域/提示区域/操作区域和底部信息区域组成。">
+  <mp-form-page title="表单结构" subtitle="展示表单页面的信息结构样式, 分别由头部区域/控件区域/提示区域/操作区域和底部信息区域组成。">
     <mp-form id="form" rules="{{rules}}" models="{{formData}}">
       <mp-cells title="表单" footer="底部说明文字底部说明文字">
         <label>
           <mp-cell prop="name" title="名称" ext-class="">
-            <input bindinput="formInputChange" data-field="name" class="weui-input" placeholder="请输入名称" />
+            <input value="{{formData.name}}" bindinput="formInputChange" data-field="name" class="weui-input" placeholder="请输入名称" />
           </mp-cell>
         </label>
         <label>
@@ -31,7 +31,7 @@
           <mp-cell prop="administrativeNum" title="行政编码" ext-class="">
             <input bindinput="formInputChange" value="{{formData.administrativeNum}}" data-field="administrativeNum"
                    class="weui-input" placeholder="请输入行政编码" />
-            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="scanCode"
+            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="uploadImageOrc"
                      data-field="administrativeNum"></mp-icon>
           </mp-cell>
         </label>
@@ -47,7 +47,7 @@
           <mp-cell prop="modelType" title="型号" ext-class="">
             <input bindinput="formInputChange" value="{{formData.modelType}}" data-field="modelType" class="weui-input"
                    placeholder="请输入型号" />
-            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="scanCode"
+            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="uploadImageOrc"
                      data-field="modelType"></mp-icon>
           </mp-cell>
         </label>
@@ -55,7 +55,7 @@
           <mp-cell prop="qualifiedNum" title="合格证编码" ext-class="">
             <input bindinput="formInputChange" value="{{formData.qualifiedNum}}" data-field="qualifiedNum"
                    class="weui-input" placeholder="请输入合格证编码" />
-            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="scanCode"
+            <mp-icon slot="footer" icon="camera" color="black" size="{{25}}" catch:tap="uploadImageOrc"
                      data-field="qualifiedNum"></mp-icon>
           </mp-cell>
         </label>
