@@ -6,6 +6,8 @@ const replaceExt = require('replace-ext')
 
 const assetsChunkName = '__assets_chunk_name__'
 
+let entryRootDir = path.resolve('src')
+
 function itemToPlugin(context, item, name) {
   if (Array.isArray(item)) {
     return new MultiEntryPlugin(context, item, name)
@@ -14,7 +16,6 @@ function itemToPlugin(context, item, name) {
 }
 
 function _inflateEntries(entries = [], dirname, entry) {
-  // 读取入口文件 app.js -> app.json
   const configFile = replaceExt(entry, '.json')
   const content = fs.readFileSync(configFile, 'utf8')
   const config = JSON.parse(content)
@@ -39,7 +40,18 @@ function inflateEntries(entries, dirname, entry) {
   //WeUI组件路径包含weui-miniprogram，据此进行判断
   if (entry.includes('weui-miniprogram')) return
 
-  entry = path.resolve(dirname, entry)
+  // 组件中引用 @van/xx 的路径处理
+  if (/^@/.test(entry)) {
+    entry = path.join(entryRootDir, 'miniprogram_npm', entry)
+  } else if (/^(\/)/.test(entry)) {
+    // '/components' '/pages' '/custom-tab-bar-show' 开头的组件绝对路径引入，需要绝对路径处理
+    // entry = path.join(path.resolve('src'), entry)
+    // 这里直接判断 '/' 开头的是从src根目录引入，就是相对src目录的”绝对路径“
+    entry = path.join(entryRootDir, entry)
+  } else {
+    entry = path.resolve(dirname, entry)
+  }
+
   if (entry != null && !entries.includes(entry)) {
     entries.push(entry)
     _inflateEntries(entries, path.dirname(entry), entry)
@@ -79,12 +91,12 @@ class MinaWebpackPlugin {
 
     this.entries
       .map(item => first(item, this.scriptExtensions))
-       // 把绝对路径转换成相对于 context 的路径
+      // 把绝对路径转换成相对于 context 的路径
       .map(item => path.relative(context, item))
       .forEach(item => itemToPlugin(context, './' + item, replaceExt(item, '')).apply(compiler))
-       //  应用每一个的入口，生成如下的入口
-      // 'app': './app.js',
-      // 'pages/index/index': './pages/index/index.js',
+    //  应用每一个的入口，生成如下的入口
+    // 'app': './app.js',
+    // 'pages/index/index': './pages/index/index.js',
 
     const assets = this.entries
       .reduce((items, item) => [...items, ...all(item, this.assetExtensions)], [])
@@ -99,6 +111,7 @@ class MinaWebpackPlugin {
   // apply是每一个插件的入口
   apply(compiler) {
     const { context, entry } = compiler.options
+    entryRootDir = context // 全局入口
     inflateEntries(this.entries, context, entry)
 
     // 这里订阅一个 compiler 的 entryOption 事件，当事件发生时，就会执行回调里面的代码
