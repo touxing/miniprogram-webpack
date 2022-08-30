@@ -128,14 +128,21 @@ yarn wxcli # 封装了交互指令
 遇到其他错误，建议 `google`
 
 项目跑起来遇到问题：
-- 安装 `npm install -g windows-build-tools`
+- 尝试换源，安装 `nrm` 切换源，很大概率是一些依赖安装不成功的问题
+- 安装依赖报错，提示 Python 找不到
+  - 安装 Python 3.7 及以上版本，解决
+- 报错提示 `node-gyp ERROR` 相关错误
+  - 1. 参考https://github.com/nodejs/node-gyp, 安装 node-gyp `npm install -g node-gyp`
+  - 2. 重新安装依赖查看，是否成功
+  - 2.1 如果成功，忽略 `2.2`，反之，执行 `2.2` 操作
+  - 2.2 安装windows C++ 编译环境 `npm install -g windows-build-tools` 配置`npm config set msvs_version 2017`
 - 尝试重新安装依赖，或者换用 `yarn` 安装依赖。
 - `yarn clean` 删除dist目录，重新 run
   - 如果执行删除命令报错 `rm` 不是可执行，请手动删除 `dist` 目录
 > 参考：https://blog.csdn.net/deflypig/article/details/107345507
 如果项目跑起来 `npm run dev` 后，打开dist目录下的小程序无法运行
 
-安装**微信开发者工具版本：Stable 1.05.2111300** 用其他版本可能会有异常，无法运行项目，这是开发者工具的问题
+检查开发者工具版本，安装**微信开发者工具版本：Stable 1.05.2111300** 用其他版本可能会有异常，无法运行项目，这是开发者工具的问题
 
 小程序开发者工具运行有问题，尝试重启开发者工具或重新 `npm run`
 
