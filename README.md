@@ -170,6 +170,13 @@ npm-check-updates
   - [x] 配置 `runtime` 优化打包体积
     - 编写了一个 `WeappRuntimePlugin.js` 插件处理 runtime 主要逻辑是替换开启 runtime 优化后，引入路径不正确的问题
 
+
+## 更新说明
+
+2022-11-10
+---
+- 开发环境使用 `esbuild-loader` 打包，提高打包效率
+- 入口文件增加打包版本信息输出，`BuildTagWebpackPlugin` 插件，可选
 ## 鸣谢
 
 > 感谢以下项目提供了参考帮助
