@@ -142,10 +142,13 @@ module.exports = (env, argv) => {
     optimization: {
       minimize: debuggable ? false : true,
       splitChunks: {
-        chunks: 'all',
-        name: 'common',
-        minChunks: 2,
-        minSize: 0,
+        cacheGroups: {
+          commons: {
+            name: 'commons',
+            chunks: 'initial',
+            minChunks: 2,
+          },
+        },
       },
       runtimeChunk: {
         name: 'runtime',
